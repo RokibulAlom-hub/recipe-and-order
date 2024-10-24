@@ -1,33 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Order from "./Components/Orders/Order"
+import Recipes from "./Components/recipes/Recipes"
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [orderCart,setorderCart] = useState([]);
+  const[prepared,setprepared] = useState([]);
+  const orderBtn = (recipe) =>{
+    const isExist = orderCart.find(
+      previousCart => previousCart.recipe_id === recipe.recipe_id
+    )
+    isExist ? alert('this recipe is already added')
+      : setorderCart([...orderCart,recipe]);
+  }
 
+  // remove prepared
+  const handleRemove = id => {
+    const deletedRecipe = orderCart.find(recipe => recipe.recipe_id === id)
+    // remove from want to cook 
+    const updatedCart = orderCart.filter(recipe => recipe.recipe_id !== id)
+    setorderCart(updatedCart);
+    setprepared([...prepared,deletedRecipe]);
+  }
+  
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <main className="w-8/12 mx-auto mt-7">
+        <div>
+          <h2 className="text-4xl font-bold text-center mb-2">Our Recipes</h2>
+          <p className="text-center">Our Most-Requested Recipe Tool Is Finally Here—And Its <br /> Going to Make Dinner So Much Easie</p>
+        </div>
+        <div className="flex flex-cols md:flex-row mt-5 gap-7">
+          {/* its recipes section */}
+            <Recipes orderBtn={orderBtn} ></Recipes>
+          {/* this is order section */}
+            <Order orderCart={orderCart} handleRemove={handleRemove} prepared={prepared}></Order>
+        </div>
+      </main>
     </>
   )
 }
